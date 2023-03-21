@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Efficient Meshy Neural Fields for Animatable Human Avatars</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="images/teaser.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1296">
+    <meta property="og:image:height" content="840">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xk-huang.github.io/ema/" />
+    <meta property="og:title" content="Efficient Meshy Neural Fields for Animatable Human Avatars" />
+    <meta property="og:description"
+        content="Efficiently digitizing high-fidelity animatable human avatars from videos is a challenging and active research topic. Recent volume rendering-based neural representations open a new way for human digitization with their friendly usability and photo-realistic reconstruction quality. However, they are inefficient for long optimization times and slow inference speed; their implicit nature results in entangled geometry, materials, and dynamics of humans, which are hard to edit afterward. Such drawbacks prevent their direct applicability to downstream applications, especially the prominent rasterization-based graphic ones. We present EMA, a method that Efficiently learns Meshy neural fields to reconstruct animatable human Avatars. It jointly optimizes explicit triangular canonical mesh, spatial-varying material, and motion dynamics, via inverse rendering in an end-to-end fashion. Each above component is derived from separate neural fields, relaxing the requirement of a template, or rigging. The mesh representation is highly compatible with the efficient rasterization-based renderer, thus our method only takes about an hour of training and can render in real-time. Moreover, only minutes of optimization is enough for plausible reconstruction results. The disentanglement of meshes enables direct downstream applications. Extensive experiments illustrate the very competitive performance and significant speed boost against previous methods. We also showcase applications including novel pose synthesis, material editing, and relighting." />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Efficient Meshy Neural Fields for Animatable Human Avatars" />
+    <meta name="twitter:description"
+        content="Efficiently digitizing high-fidelity animatable human avatars from videos is a challenging and active research topic. Recent volume rendering-based neural representations open a new way for human digitization with their friendly usability and photo-realistic reconstruction quality. However, they are inefficient for long optimization times and slow inference speed; their implicit nature results in entangled geometry, materials, and dynamics of humans, which are hard to edit afterward. Such drawbacks prevent their direct applicability to downstream applications, especially the prominent rasterization-based graphic ones. We present EMA, a method that Efficiently learns Meshy neural fields to reconstruct animatable human Avatars. It jointly optimizes explicit triangular canonical mesh, spatial-varying material, and motion dynamics, via inverse rendering in an end-to-end fashion. Each above component is derived from separate neural fields, relaxing the requirement of a template, or rigging. The mesh representation is highly compatible with the efficient rasterization-based renderer, thus our method only takes about an hour of training and can render in real-time. Moreover, only minutes of optimization is enough for plausible reconstruction results. The disentanglement of meshes enables direct downstream applications. Extensive experiments illustrate the very competitive performance and significant speed boost against previous methods. We also showcase applications including novel pose synthesis, material editing, and relighting." />
+    <meta name="twitter:image" content="images/teaser.png" />
+
+
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏃🏼</text></svg>">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="slick/slick-theme.css" />
+    <style>
+        .slick-prev:before,
+        .slick-next:before {
+            color: black;
+
+        }
+
+        /* .container {
+            margin-left: -100px;
+        } */
+        .image-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-wrapper {
+            margin: 0 10px;
+            text-align: center;
+        }
+
+        .caption-row {
+            align-items: flex-end;
+        }
+
+        .caption-row .image-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .caption-row .image-wrapper p {
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container" id="main">
+        <div class="row">
+            <h2 class="col-md-12 text-center">
+                <b>EMA</b>: <b>E</b>fficient <b>M</b>eshy Neural Fields <br> for Animatable Human <b>A</b>vatars</br>
+                <!-- <small>
+                    <br>
+                    Anonymous Submission
+                </small> -->
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <ul class="list-inline">
+                    <li>
+                        <a href="https://xk-huang.github.io/">
+                            Xiaoke Huang
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/yiji-cheng-a8b922213/">
+                            Yiji Cheng
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                    <li>
+                        <a href="https://andytang15.github.io/">
+                            Yansong Tang*
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                    <!-- <br> -->
+                    <li>
+                        <a href="https://scholar.google.com/citations?hl=zh-CN&user=Xrh1OIUAAAAJ&view_op=list_works&sortby=pubdate">
+                            Xiu Li
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                    <li>
+                        <a href="https://scholar.google.com/citations?user=6a79aPwAAAAJ&hl=en">
+                            Jie Zhou
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                    <li>
+                        <a href="http://ivg.au.tsinghua.edu.cn/Jiwen_Lu/">
+                            Jiwen Lu
+                        </a>
+                        <!-- </br>Tsinghua University -->
+                    </li>
+                </ul>
+                Tsinghua University
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <ul class="nav nav-pills nav-justified">
+                    <li>
+                        <a href="https://arxiv.org/abs/2303.12965">
+                            <image src="images/paper_front_page.jpg" height="50px">
+                                <h4><strong>Paper (arXiv)</strong></h4>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="docs/arxiv_Efficient_Meshy_Neural_Fields_for_Animatable_Human_Avatars.small.pdf">
+                            <image src="images/paper_front_page.jpg" height="50px">
+                                <h4><strong>Paper (Small)</strong></h4>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://youtu.be/_Wgv7cPJ-Ko">
+                            <image src="images/youtube_icon.png" height="50px">
+                                <h4><strong>Video (Unlist)</strong></h4>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/xk-huang/ema">
+                            <image src="images/github.png" height="50px">
+                                <h4><strong>Code<br>(Coming Soon)</strong></h4>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <image src="images/teaser.png" width="100%"></image>
+            </div>
+            <div class="col-md-8 col-md-offset-2">
+                <p class="text-justify">
+                    <b>EMA</b> efficiently and jointly learns canonical shapes, materials, and motions via differentiable inverse rendering in an end-to-end manner. The method does not require any predefined templates or riggings. The derived avatars are animatable and can be directly applied to the graphics renderer and downstream tasks.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Abstract
+                </h3>
+                <p class="text-justify">
+                    Efficiently digitizing high-fidelity animatable human avatars from videos is a challenging and active research topic. Recent volume rendering-based neural representations open a new way for human digitization with their friendly usability and photo-realistic reconstruction quality. However, they are inefficient for long optimization times and slow inference speed; their implicit nature results in entangled geometry, materials, and dynamics of humans, which are hard to edit afterward. Such drawbacks prevent their direct applicability to downstream applications, especially the prominent rasterization-based graphic ones. We present <b>EMA</b>, a method that <b>E</b>fficiently learns <b>M</b>eshy neural fields to reconstruct animatable human <b>A</b>vatars. It jointly optimizes explicit triangular canonical mesh, spatial-varying material, and motion dynamics, via inverse rendering in an end-to-end fashion. Each above component is derived from separate neural fields, relaxing the requirement of a template, or rigging. The mesh representation is highly compatible with the efficient rasterization-based renderer, thus our method only takes about an hour of training and can render in real-time. Moreover, only minutes of optimization is enough for plausible reconstruction results. The disentanglement of meshes enables direct downstream applications. Extensive experiments illustrate the very competitive performance and significant speed boost against previous methods. We also showcase applications including novel pose synthesis, material editing, and relighting.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3> Video </h3>
+                <div class="text-center">
+                    <div style="position:relative;padding-top:56.25%;">
+                        <iframe src="https://www.youtube.com/embed/_Wgv7cPJ-Ko" allowfullscreen="" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Method
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <img src="images/pipeline.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                        <p class="text-justify">
+                            <b>The pipeline of EMA</b>. EMA jointly optimizes canonical shapes, materials, lights, and motions via efficient differentiable inverse rendering. The canonical shapes are attained firstly through the differentiable marching tetrahedra, which converts SDF fields into meshes. Next, it queries PBR materials, including diffuse colors, roughness, and specularity on the mesh surface. Meanwhile, the skinning weights and per-vertices offsets are predicted on the surface as well, which are then applied to the canonical meshes with the guide of input skeletons. Finally, a rasterization-based differentiable renderer takes in the posed meshes, materials, and environment lights, and renders the final avatars efficiently.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Training Efficiency
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <video id="v0" width="100%" loop muted autoplay preload controls playsinline>
+                            <source src="videos/ema.supp.efficiency.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </div>
+                <p>
+                    ZJU-MoCap 313 subject.
+                    With minutes of training, our method can produce indicative results.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Qualitative Comparisons
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <video id="v0" width="100%" loop muted autoplay preload controls playsinline>
+                            <source src="videos/ema.supp.compare.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </div>
+                <p>
+                    ZJU-MoCap 313 subject.
+                    Only the first 60 frames (~2 sec) are used for training, yet the rest frames are left for testing.
+                    Thus the motions in the training data are quite limited, which challenge the generalization ability.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Representation Visualization
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <video id="v0" width="100%" loop muted autoplay preload controls playsinline>
+                            <source src="videos/ema.supp.visualization.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </div>
+                <p>
+                    We visualize the rendering, albedo, materials, and normals for each subject.
+                    The disentangled mesh and material representations enable us instant editing in downstream tasks once the training is finished.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Novel Pose Synthesis on AIST
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <video id="v0" width="100%" loop muted autoplay preload controls playsinline>
+                            <source src="videos/ema.supp.aist.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </div>
+                <p>
+                    Since we model the canonical shapes and the forward skinning, we can easily synthesize humans with novel poses (e.g. poses from the AIST dataset).
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Texture Editing and Relighting
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;">
+                        <video id="v0" width="100%" loop muted autoplay preload controls playsinline>
+                            <source src="videos/ema.supp.texture_relight.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </div>
+                <p>
+                    Here we showcase downstream applications, such as texture editing and relighting.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Citation
+                </h3>
+                <div class="form-group col-md-10">
+                    <textarea id="bibtex" class="form-control" readonly>
+@article{Huang2023EMA,
+    title={Efficient Meshy Neural Fields for Animatable Human Avatars},
+    author={Xiaoke Huang and Yiji Cheng and Yansong Tang and Xiu Li and Jie Zhou and Jiwen Lu},
+    journal={arXiv},
+    year={2023},
+    volume={abs/????.?????}
+}
+                    </textarea>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Acknowledgements
+                </h3>
+                <p class="text-justify">
+                    We would like to give very special thanks to Jinpeng Liu for the video editing.
+                    We would like to thank Yunzhi Teng for the constructive discussions.
+                    The website template was borrowed from <a href="http://mgharbi.com/">Michaël Gharbi</a> and <a href="https://jonbarron.info/mipnerf360/">Jon Barron</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <small>
+                    Last updated: 03/21/2023.
+                </small>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="slick/slick.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.slick').slick({
+                // setting-name: setting-value
+                "autoplay": true,
+                dots: true,
+                infinite: true,
+                speed: 10000,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                // centerMode: true,
+                // centerPadding: '60px',
+                // responsive: [
+
+                // ]
+            });
+        });
+    </script>
+
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+</body>
+</html>
