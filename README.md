@@ -85,7 +85,7 @@ python scripts/convert_smpl_params_to_pose_data.py --smpl_dir data/h36m/S$i/Posi
 
 ### The template tets
 
-Download via ? Place them into `tmp/quartet/meshes/`.
+Download the [meshes](https://huggingface.co/xk-huang/quartet_meshes) Place them into `tmp/quartet/meshes/`.
 
 ## Env
 
