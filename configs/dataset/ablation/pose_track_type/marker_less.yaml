@@ -1,0 +1,6 @@
+defaults:
+  - /dataset/h36m/s9p-easymocap.yaml@_here_
+  - _self_
+
+exp_name: ablations-pose_track_type
+out_dir: "outputs/${exp_name}/marker_less/${now:%y%m%d_%H%M%S}"

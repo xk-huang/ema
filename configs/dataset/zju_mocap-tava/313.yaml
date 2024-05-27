@@ -1,0 +1,107 @@
+monitor_metric_name: "metrics_otf/psnr/validate_${validate_dataset.0.split}"
+monitor_metric_threshold: 1.0
+monitor_metric_type: "max"
+
+compute_val_metrics_with_mask: false
+
+subject_id: 313
+base_root_dir: data/zju_mocap
+
+pre_load: false
+force_reload: false
+
+use_vitruvian_pose: false
+
+train_dataset:
+  _target_: dataset.zju_mocap_tava.DatasetZJUMoCapTAVA
+  root_dir: ${base_root_dir}/CoreView_${subject_id}
+  split: train
+  mask_dir_name: mask_cihp
+  tfs_type: ${tfs_type}
+
+  views: null 
+  begin_frame_id: 0
+  num_frames: null
+  frame_interval: null
+
+  dilate_erode_mask: False
+  order_camera_first: True
+  resize_factor: 0.5
+  opencv_camera: True
+  pre_load: ${pre_load}
+  force_reload: ${force_reload}
+  no_image_inputs: False
+  cam_near_far: [0.1, 1000.0]
+  width: 1024
+  height: 1024
+  use_vitruvian_pose: ${use_vitruvian_pose}
+
+validate_dataset:
+  - _target_: ${train_dataset._target_}
+    root_dir: ${train_dataset.root_dir}
+    split: val_ind
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: null # 313 & 315 only have 21 views, instead of 23 view
+    begin_frame_id: 0
+    num_frames: 100
+    frame_interval: null
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}
+
+  - _target_: ${train_dataset._target_}
+    root_dir: ${train_dataset.root_dir}
+    split: val_ood
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: ${validate_dataset.0.views}
+    begin_frame_id: 0
+    num_frames: 100
+    frame_interval: null
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}
+
+  - _target_: ${train_dataset._target_}
+    root_dir: ${train_dataset.root_dir}
+    split: val_view
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: ${validate_dataset.0.views}
+    begin_frame_id: 0
+    num_frames: 100
+    frame_interval: null
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}

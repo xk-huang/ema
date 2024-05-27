@@ -1,0 +1,9 @@
+defaults:
+  - /dataset/h36m/s9p.yaml@_here_
+  - _self_
+
+exp_name: ablations-num_views
+out_dir: "outputs/${exp_name}/1/${now:%y%m%d_%H%M%S}"
+
+train_views: [1]  # follow Animatable NeRF
+

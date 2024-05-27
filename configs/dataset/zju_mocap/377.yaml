@@ -1,0 +1,18 @@
+defaults:
+  - zju_mocap/313.yaml@_here_
+  - _self_
+
+subject_id: 377
+
+train_begin_frame_id: 0
+train_num_frame: 300
+
+validate_views: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 19, 20, 21, 22]  # 313 & 315 only have 21 views, instead of 23 view
+# validate_begin_frame_id: 300
+# validate_num_frame: 200
+
+validate_begin_frame_id_novel_view: 0
+validate_num_frame_novel_view: 10  # ceil(300 / 30) = 10
+validate_begin_frame_id_novel_pose: 300
+# validate_num_frame_novel_pose: 7  # ceil(200 / 30) = 7, animatble nerf
+validate_num_frame_novel_pose: 34  # ceil(1000 / 30) = 34, neuralbody

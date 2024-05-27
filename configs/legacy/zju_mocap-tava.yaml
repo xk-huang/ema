@@ -1,0 +1,26 @@
+defaults:
+  - base.yaml
+  - _self_
+
+ref_mesh: "${root_fp}/CoreView_${subject_id}"  # [XXX] the true data dir. This is for ZJU-Mocap
+base_mesh: null  # [XXX] not used in Dyn
+cam_near_far: [0.1, 1000.0]
+opencv_camera: true
+pre_load: true  # Pre-load entire dataset into memory for faster training
+force_reload: false # Force to reload the dataset even if it is already loaded
+# dilate_erode_mask: false # Dilate and erode the boardermask to remove holes
+no_image_inputs: false
+
+root_fp: "data/zju_mocap"
+subject_id: 313  # 313,315,377,386
+# color_bkgd_aug: "black"  # [XXX] ["random", "white", "black"]. default is "black". Data augmentation should be done in "train_dyn.py", using "background" flags.
+resize_factor: 0.5
+
+camera_first: true  # true - for each frame, for each camera; false for each camera, for each frame
+mask_dir_name: "mask_cihp"  # ['mask_cihp', 'mask-schp']. Only for training part
+
+views: null  # null or list of number
+
+use_legacy_dataset: true
+
+validate_splits: ["val_view", "val_ind", "val_ood"]

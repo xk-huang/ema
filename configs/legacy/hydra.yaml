@@ -1,0 +1,14 @@
+hydra:
+  job:
+    name: "nvdiffrec"
+    config:
+      # configuration for the ${hydra.job.override_dirname} runtime variable
+      override_dirname:
+        kv_sep: ':'
+        item_sep: '-'
+  run:
+    # set the saving / loading directory
+    dir: "outputs/\
+      ${hydra.job.name}/\
+      ${hydra.job.override_dirname}/\
+      ${now:%y%m%d_%H%M%S}"

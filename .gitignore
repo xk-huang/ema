@@ -1,0 +1,6 @@
+data/
+outputs/
+tmp/
+meta_configs/olds*
+__pycache__/
+.vscode/

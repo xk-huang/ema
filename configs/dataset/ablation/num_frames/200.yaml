@@ -1,0 +1,10 @@
+defaults:
+  - ablation/num_frames/1@_here_
+  - _self_
+
+exp_name: ablations-num_frames
+out_dir: "outputs/${exp_name}/200/${now:%y%m%d_%H%M%S}"
+
+# follow Animatable NeRF
+train_begin_frame_id: 0
+train_num_frame: 200

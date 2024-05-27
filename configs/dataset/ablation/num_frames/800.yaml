@@ -1,0 +1,33 @@
+defaults:
+  - ablation/num_frames/1@_here_
+  - _self_
+
+exp_name: ablations-num_frames
+out_dir: "outputs/${exp_name}/800/${now:%y%m%d_%H%M%S}"
+
+# follow Animatable NeRF
+train_begin_frame_id: 0
+train_num_frame: 800  # all 1965 frames from S9
+
+train_dataset:
+  _target_: dataset.zju_mocap.DatasetZJUMoCap
+  root_dir: ${base_root_dir}/S${subject_id}/Posing
+  split: train
+  mask_dir_name: mask_cihp
+  tfs_type: ${tfs_type}
+
+  views: ${train_views}
+  begin_frame_id: ${train_begin_frame_id}
+  num_frames: ${train_num_frame}
+  frame_interval: 1
+
+  dilate_erode_mask: False
+  order_camera_first: True
+  resize_factor: 1.0
+  opencv_camera: True
+  pre_load: ${pre_load}
+  force_reload: ${force_reload}
+  no_image_inputs: False
+  cam_near_far: [0.1, 1000.0]
+  width: 1000
+  height: 1000

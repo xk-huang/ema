@@ -1,0 +1,15 @@
+defaults:
+  - /dataset/h36m/s9p.yaml@_global_
+  - _self_
+
+exp_name: ablations-num_frames
+out_dir: "outputs/${exp_name}/1/${now:%y%m%d_%H%M%S}"
+
+# follow Animatable NeRF
+train_begin_frame_id: 0
+train_num_frame: 1
+
+validate_begin_frame_id_novel_view: 0  # 0
+validate_num_frame_novel_view: 44  # ceil(260 / 6) = 1
+validate_begin_frame_id_novel_pose: 1000  # max(200 * 5, 800 * 1)
+validate_num_frame_novel_pose: 23  # ceil(133 / 6) = 23

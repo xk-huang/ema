@@ -1,0 +1,163 @@
+# git commit: cc39737
+# ??? too many memory of 1k training
+h36m:
+  exp_name: base_config-all_dataset-smpl_init-all-nrm_perturb.h36m
+  iter: [10000]
+  no_perturbed_nrm: [false]
+  skin_net_encoding_type: ["frequency_lipschitz"]
+  sdf_mlp_type: ["frequency_lipschitz"]
+  non_rigid_offset_net_encoding_type: ["frequency"]
+  tfs_type: ["bone"]
+  dmtet_grid: [128] #  [192, 256]
+  tet_dir: tmp/quartet/meshes/
+  batch: 2
+  learning_rate_geometry: 0.0005
+  learning_rate_material: 0.0005
+  learning_rate_motion: 0.0005
+  learn_sdf_with_mlp: [true]
+  use_texture_conditional_inputs: true
+  learn_tet_vert_deform_with_mlp: false
+  warmup_iter_tet: [100]
+  learning_rate_final_mult: [1.0]
+  # ks_max: ["'[0.0, 1.0, 1.0]'", "'[1.0, 1.0, 1.0]'"]
+  texture_conditional_channel_idx: ["'[3]'"]
+  use_training_tricks: [false]
+  num_samples_per_bone: [50]
+  vertices_laplace_regularizer: [0.0]
+  tet_deform_regularizer: 0.0
+  sdf_regularizer: 0.0
+  bone_sdf_regularizer: 0.0
+  albedo_regularizer: 0.0
+  ks_regularizer: 0.0
+  nrm_regularizer: 0.0
+  perturb_nrm_regularizer: 0.25
+  visibility_regularizer: 0.0
+  light_regularizer: [0.005]
+  sdf_regularizer: [0.01]
+  enable_tet_vert_deform: false
+  spp: [1]
+  subdivide_aware_marching_tet: false
+  sdf_mlp_lipschitz_regularizer: 1.0e-6 
+  skin_net_lipschitz_regularizer: 1.0e-6
+  prune_tetmesh_iters: "'[500]'"
+  subdivide_tetmesh_iters: ["'[20000]'"]
+  learn_non_rigid_offset: true
+  non_rigid_type: ['canon']
+  non_rigid_offset_regularizer: [0.1]
+  non_rigid_bone_offset_regularizer: [0.0]
+  non_rigid_offset_net_lipschitz_regularizer: 1.0e-6
+  mlp_texture_internal_dims: [64]
+  split_non_rigid_offset_net_optim_steps: [500]
+  dataset@_global_: [h36m/s9p.yaml, h36m/s5p.yaml, h36m/s11p.yaml, h36m/s8p.yaml, h36m/s7p.yaml, h36m/s1p.yaml, h36m/s6p.yaml]
+  pre_load: false
+  out_dir: outputs/\${exp_name}/h36m/\${subject_id}/\${now:%y%m%d_%H%M%S}
+  pre_train_with_smpl: true
+  invisible_triangle_sdf_regularizer: 0.01
+
+zju_mocap:
+  exp_name: base_config-all_dataset-smpl_init-all-nrm_perturb.zju_mocap
+  iter: [10000]
+  no_perturbed_nrm: [false]
+  skin_net_encoding_type: ["frequency_lipschitz"]
+  sdf_mlp_type: ["frequency_lipschitz"]
+  non_rigid_offset_net_encoding_type: ["frequency"]
+  tfs_type: ["bone"]
+  dmtet_grid: [128] #  [192, 256]
+  tet_dir: tmp/quartet/meshes/
+  batch: 2
+  learning_rate_geometry: 0.0005
+  learning_rate_material: 0.0005
+  learning_rate_motion: 0.0005
+  learn_sdf_with_mlp: [true]
+  use_texture_conditional_inputs: true
+  learn_tet_vert_deform_with_mlp: false
+  warmup_iter_tet: [100]
+  learning_rate_final_mult: [1.0]
+  # ks_max: ["'[0.0, 1.0, 1.0]'", "'[1.0, 1.0, 1.0]'"]
+  texture_conditional_channel_idx: ["'[3]'"]
+  use_training_tricks: [false]
+  num_samples_per_bone: [50]
+  vertices_laplace_regularizer: [0.0]
+  tet_deform_regularizer: 0.0
+  sdf_regularizer: 0.0
+  bone_sdf_regularizer: 0.0
+  albedo_regularizer: 0.0
+  ks_regularizer: 0.0
+  nrm_regularizer: 0.0
+  perturb_nrm_regularizer: 0.25
+  visibility_regularizer: 0.0
+  light_regularizer: [0.005]
+  sdf_regularizer: [0.01]
+  enable_tet_vert_deform: false
+  spp: [2]
+  subdivide_aware_marching_tet: false
+  sdf_mlp_lipschitz_regularizer: 1.0e-6 
+  skin_net_lipschitz_regularizer: 1.0e-6
+  prune_tetmesh_iters: "'[500]'"
+  subdivide_tetmesh_iters: ["'[20000]'"]
+  learn_non_rigid_offset: true
+  non_rigid_type: ['canon']
+  non_rigid_offset_regularizer: [0.1]
+  non_rigid_bone_offset_regularizer: [0.0]
+  non_rigid_offset_net_lipschitz_regularizer: 1.0e-6
+  mlp_texture_internal_dims: [64]
+  split_non_rigid_offset_net_optim_steps: [500]
+  dataset@_global_: [zju_mocap/313.yaml, zju_mocap/315.yaml, zju_mocap/377.yaml, zju_mocap/386.yaml]
+  pre_load: false
+  out_dir: outputs/\${exp_name}/zju_mocap/\${subject_id}/\${now:%y%m%d_%H%M%S}
+  pre_train_with_smpl: true
+  invisible_triangle_sdf_regularizer: 0.01
+
+
+zju_mocap-tava:
+  exp_name: base_config-all_dataset-smpl_init-all-nrm_perturb.zju_mocap_tava
+  iter: [10000]
+  no_perturbed_nrm: [false]
+  skin_net_encoding_type: ["frequency_lipschitz"]
+  sdf_mlp_type: ["frequency_lipschitz"]
+  non_rigid_offset_net_encoding_type: ["frequency"]
+  tfs_type: ["bone"]
+  dmtet_grid: [128] #  [192, 256]
+  tet_dir: tmp/quartet/meshes/
+  batch: 2
+  learning_rate_geometry: 0.0005
+  learning_rate_material: 0.0005
+  learning_rate_motion: 0.0005
+  learn_sdf_with_mlp: [true]
+  use_texture_conditional_inputs: true
+  learn_tet_vert_deform_with_mlp: false
+  warmup_iter_tet: [100]
+  learning_rate_final_mult: [1.0]
+  # ks_max: ["'[0.0, 1.0, 1.0]'", "'[1.0, 1.0, 1.0]'"]
+  texture_conditional_channel_idx: ["'[3]'"]
+  use_training_tricks: [false]
+  num_samples_per_bone: [50]
+  vertices_laplace_regularizer: [0.0]
+  tet_deform_regularizer: 0.0
+  sdf_regularizer: 0.0
+  bone_sdf_regularizer: 0.0
+  albedo_regularizer: 0.0
+  ks_regularizer: 0.0
+  nrm_regularizer: 0.0
+  perturb_nrm_regularizer: 0.25
+  visibility_regularizer: 0.0
+  light_regularizer: [0.005]
+  sdf_regularizer: [0.01]
+  enable_tet_vert_deform: false
+  spp: [2]
+  subdivide_aware_marching_tet: false
+  sdf_mlp_lipschitz_regularizer: 1.0e-6 
+  skin_net_lipschitz_regularizer: 1.0e-6
+  prune_tetmesh_iters: "'[500]'"
+  subdivide_tetmesh_iters: ["'[20000]'"]
+  learn_non_rigid_offset: true
+  non_rigid_type: ['canon']
+  non_rigid_offset_regularizer: [0.1]
+  non_rigid_bone_offset_regularizer: [0.0]
+  non_rigid_offset_net_lipschitz_regularizer: 1.0e-6
+  mlp_texture_internal_dims: [64]
+  split_non_rigid_offset_net_optim_steps: [500]
+  dataset@_global_: [zju_mocap-tava/313.yaml, zju_mocap-tava/315.yaml, zju_mocap-tava/377.yaml, zju_mocap-tava/386.yaml]
+  pre_load: false
+  pre_train_with_smpl: true
+  out_dir: outputs/\${exp_name}/zju_mocap-tava/\${subject_id}/\${now:%y%m%d_%H%M%S}

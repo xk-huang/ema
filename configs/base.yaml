@@ -1,0 +1,248 @@
+defaults:
+  - _self_
+  - dataset@_here_: h36m/s9p
+
+# Meta
+exp_name: "debug"  # wandb project name, output and logging base directory.
+out_dir: "outputs/${exp_name}/${now:%y%m%d_%H%M%S}"  # override exp dir and name via hydra
+
+seed: 2022
+strict_reproducibility: true
+
+# Multi-GPU
+multi_gpu: false
+local_rank: 0
+rank: 0
+world_size: 1
+
+# Training
+iter: 5000  # the training iteration.
+batch: 16  # batch size, tweak it if OOM
+num_workers_train: 4
+num_workers_validate: 0
+train_res: [512, 512]  # [XXX] (Deprecated) should be the same as the resolution in dataset. display_res may come from it. Used in val light map rendering.not used unless your turn up display without specifying display_res; only used by NeRF and Mesh datasets.
+
+# Resuming
+external_ckpt_dir: null
+external_ckpt_step: null
+
+# Validation and Visualization
+validate: false  # if iter % validate_interval == 0, recommend not to validate.
+no_train: false
+no_mesh_export: false
+val_batch: 1
+validate_interval: 1000
+num_val_examples: 100
+compute_val_metrics: true
+save_val_images: true
+compute_val_metrics_with_mask: ???
+# validate_splits: ["val_view", "val_ind", "val_ood"]
+
+visualize_freq: null  # None means no sleep; otherwise int or float
+
+runtime_breakdown: false
+validate_update_base_mesh: false
+
+# Logging 
+log_interval: 100
+log_val_interval: 500
+save_interval: 500
+display: [{"bsdf": "kd"}, {"bsdf": "ks"}, {"bsdf": "normal"}, {"latlong": true}]  # Conf validation window/display. E.g. [{"relight" : <path to envlight>}], or None (null)
+display_interval: 0
+display_res: null
+
+save_ckpt_interval: 5000
+num_kept_ckpts: 3
+
+save_mesh_interval: 5000
+
+monitor_metric_name: null
+monitor_metric_outlier_threshold: 1.0
+monitor_metric_type: "max"
+
+# Dev run
+dev_run: false
+dev_run_num_frames: 1
+dev_run_same_train_val: false
+
+# Optimization
+learning_rate_final_mult: 0.1  # Exponential falloff from [1.0, learning_rate_final_mult] over (iter - warmup_iter) epochs.   
+learning_rate_geometry: 0.001  # tweak learning rate
+learning_rate_material: 0.001  # tweak learning rate
+learning_rate_motion: 0.001  # tweak learning rate for skinning net
+learning_rate_schedule_type: "exponential" # ["exponential", "linear", "cosine", "step"]
+learning_rate_schedule_steps: [3000] # List[int]
+
+use_training_tricks: true  # true - annealing learning rate and loss weights; false - no annealing
+warmup_iter_mesh: 100  # warmup lr from 0 to learning rate. Must use if `learn_sdf_with_mlp` is on
+warmup_iter_tet: 100  # warmup lr from 0 to learning rate. Must use for no dmtet explosion/vanishment
+
+optimizer_geometry: "adam"  # for mesh optimization, there are two types of optimizer. ["adam", "vectoradam"]
+
+# Loss
+loss: "logl1"  # ['logl1', 'logl2', 'mse', 'smape', 'relmse']
+img_loss_weight: 1.0
+mask_loss_weight: 1.0
+lpips_loss_weight: 0.0
+lpips_in_srgb: true
+
+vertices_laplace_regularizer: 0.0  # Laplacian regularization for dmtet vertices.
+tet_deform_regularizer: 1  # Regularization for dmtet tetrahedra deformation.
+
+sdf_regularizer: 0.2  # Weight for sdf regularizer (see paper for details)
+invisible_triangle_sdf_regularizer: 0.0  # Weight for sdf regularizer for DTU (see paper for details)
+init_sdf_regularizer: 0.0
+bone_sdf_hinge: -0.01  # must be negative, since bone and joint is always inside the mesh
+bone_sdf_regularizer: 0.0
+eikonal_regularizer: 0.0
+
+laplace: "relative"  # Only for mesh. Mesh Laplacian ["absolute", "relative"]
+laplace_scale: 10000.0  # Only for mesh. Weight for sdf regularizer. Default is relative with large weight
+
+albedo_regularizer: 0.03  # Weight for albedo regularizer (see paper for details)
+ks_regularizer: 0.05
+nrm_regularizer: 0.025
+perturb_nrm_regularizer: 0.25
+light_regularizer: 0.005  # Weight for light regularizer (see paper for details)
+visibility_regularizer: 0.001  # Weight for visibility regularizer (see paper for details)
+
+non_rigid_offset_regularizer: 0.1
+non_rigid_offset_laplace_regularizer: 0.0
+non_rigid_bone_offset_regularizer: 1.0
+skinning_regularizer: 1.0  # skinning on bone should be fixed to that bone. range: [0.0, 1.0, or any other positive number]
+
+smpl_surface_skinning_regularizser: 0.0
+
+num_samples_per_bone: 5
+
+sdf_mlp_lipschitz_regularizer: 1.0e-6  # penalty for skinning net lipschitz constraint [0.0, 1.0e-6]
+skin_net_lipschitz_regularizer: 1.0e-6  # penalty for skinning net lipschitz constraint [0.0, 1.0e-6]
+non_rigid_offset_net_lipschitz_regularizer: 1.0e-6  # penalty for skinning net lipschitz constraint [0.0, 1.0e-6]
+
+skin_logits_regularizer: 0.0
+skin_logits_regularizer_radius: 0.005
+
+use_loss_scaling: false
+num_loss_scaling_buffers: 1000
+loss_scaling_type: "full"  # ["full", "image", "mask"]
+
+num_rand_img_for_img_loss: ${batch}
+mask_percentage_for_img_loss: null # null, or (0 - 1)
+# Data
+
+# Geometry
+tet_dir: null
+dmtet_grid: 64  # Resolution of initial tet grid. We provide 64 and 128 resolution grids. Other resolutions can be generated with https://github.com/crawforddoran/quartet
+
+mesh_center: [0.0, -0.3, 0.025]  # for SMPL is it [0.0, -0.3, 0.025]. default is 0.0
+mesh_scale: 2.1  # Scale of tet grid box. Adjust to cover the model. (-0.5, 0.5) times this scale
+
+finetune_tet2mesh: false
+lock_pos: false  # Disable vertex position optimization in the second pass
+use_mesh: false  # true - optimize mesh
+external_mesh_path: null  # path to external mesh
+external_mtl_path: null # path to external mtl
+pre_train_tet_with_bone_capsule: false
+use_tet_aabb_in_mesh: false
+
+learn_sdf_with_mlp: false
+sdf_mlp_type: "hash_grid"  # ["hash_grid", "frequency", "frequency_lipschitz", 'frequency_windowed', 'frequency_windowed_lipschitz']
+sdf_mlp_num_freq: 6
+sdf_mlp_num_base_freq: 4
+enable_tet_vert_deform: false  # default in original paper is true. For human maybe there is less influence
+learn_tet_vert_deform_with_mlp: false  # if ture, the tet vert deform is single-scale, thus subdivision might fail
+pre_train_sdf_mlp_steps: 500
+pre_train_sdf_mlp_learning_rate: 0.0005
+sdf_mlp_postional_encoding_anneal_steps: 0
+
+subdivide_aware_marching_tet: false
+subdivide_tetmesh_iters: []  # list
+subdivide_no_motion_update_interval: 0
+subdivide_learning_rate_warmup_interval: 0
+subdivide_learning_rate_mult: 0.01
+prune_tetmesh_iters: []
+prune_tetmesh_padding_percent: 0.05
+subdivide_tetmesh_type: "full"  # ["full", "surface"]
+force_reinit_optims_after_subdivide_tetmesh: True
+
+pre_train_with_smpl: false
+
+iter_to_stop_optim_sdf_mlp: null  # null or int
+
+# Motion
+skin_net_encoding_type: "frequency"  # Which type of NN to encode skinning weights. ['hash_grid', 'frequency', 'frequency_lipschitz, 'frequency_windowed', 'frequency_windowed_lipschitz', 'meta_skin_net']
+skin_net_num_freq: 4
+skin_net_num_base_freq: 0
+skin_net_logit_softmax_temperature: 0.05  # Follow TAVA; SNARF, FAST-SNARF 0.05; 1.0 for no scaling
+tfs_type: "joint"  # use joint transformation like SMPL; or bone transformation in CG. ['joint', 'bone']
+learn_mesh_skinning: false  # true - learn mesh skinning; false - use predefined (e.g., SMPL) skinning weights.
+skin_net_postional_encoding_anneal_steps: 0
+
+learn_non_rigid_offset: true
+non_rigid_offset_input_dim: 78
+non_rigid_offset_net_encoding_type: "frequency"  # Which type of NN to encode skinning weights. ['hash_grid', 'frequency', 'frequency_lipschitz',  'frequency_windowed', 'frequency_windowed_lipschitz']
+non_rigid_offset_net_num_freq: 4
+non_rigid_offset_net_num_base_freq: 0
+non_rigid_type: 'canon'  # [ 'world', 'canon']
+split_non_rigid_offset_net_optim_steps: 500
+non_rigid_offset_net_postional_encoding_anneal_steps: 0
+non_rigid_offset_smooth: false  # not working
+add_noise_to_params: false  # add noise N(0, 0.1) to pose parameters beta.
+
+pre_train_skin_net_with_bone_capsule: false
+pre_train_skin_net_steps: 500
+pre_train_skin_net_learning_rate: 0.001
+
+pre_train_non_rigid_offset_net_with_bone_capsule: false
+pre_train_non_rigid_offset_net_steps: 500
+pre_train_non_rigid_offset_net_learning_rate: 0.001
+
+meta_skin_net_weight_path: data/meta_skin_net.pt  # null, or /path/to/meta_skin_net_weights.pth
+
+# Material
+custom_mip: false
+kd_max: [1.0,  1.0,  1.0,  1.0]
+kd_min: [0.0,  0.0,  0.0,  0.0]  # Limits for kd
+ks_max: [1.0,  1.0,  1.0]
+ks_min: [0.0, 0.08,  0.0]  # Limits for ks
+learn_mesh_material_with_mlp: false  # true - learn NN parametrized material; false - learn plain vector material.
+min_roughness: 0.08
+mtl_override: null  # Override material of model
+nrm_max: [1.0,  1.0,  1.0]
+nrm_min: [-1.0, -1.0,  0.0]  # Limits for normal map
+random_textures: true
+texture_res: [1024, 1024]
+use_texture_conditional_inputs: false
+texture_conditional_input_dims: 78
+texture_conditional_channel_idx: [6, 7, 8]  # List or null;rgb,orm,nnn
+no_perturbed_nrm: false
+perturbed_nrm_start_iter: 0 # int
+mlp_texture_internal_dims: 32
+use_view_direction: false  # The [N, 3] tensor
+
+# Light
+camera_space_light: false  # Fixed light in camera space. This is needed for setups like ethiopian head where the scanned object rotates on a stand.
+env_scale: 1.0  # Env map intensity multiplier
+envmap: null  # HDR environment probe
+learn_light: true
+lock_light: false  # Disable light optimization in the second pass
+
+# Rendering
+rasterize_context: opengl
+layers: 1
+spp: 1
+background:  "black"  # ['black', 'white', 'checker', 'reference']
+bsdf: null  # [null, 'pbr', 'diffuse', 'kd_ao', 'kd', 'ks', 'normal', 'tangent']. null means follow th bsdf in material
+
+
+hydra:
+  job:
+    name: ${exp_name}
+    config:
+      # configuration for the ${hydra.job.override_dirname} runtime variable
+      override_dirname:
+        exclude_keys:
+          - exp_name
+  run:
+    # set the saving / loading directory
+    dir: "${out_dir}"

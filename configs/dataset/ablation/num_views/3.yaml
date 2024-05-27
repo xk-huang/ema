@@ -1,0 +1,9 @@
+defaults:
+  - ablation/num_views/1@_here_
+  - _self_
+
+exp_name: ablations-num_views
+out_dir: "outputs/${exp_name}/3/${now:%y%m%d_%H%M%S}"
+
+train_views: [0, 1, 2]  # follow Animatable NeRF
+

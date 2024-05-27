@@ -1,0 +1,7 @@
+defaults:
+  - /dataset/h36m/s9p.yaml@_global_
+  - _self_
+
+
+train_dataset:
+  root_dir: ${base_root_dir}/S${subject_id}/Posing_easymocap

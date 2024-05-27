@@ -1,0 +1,73 @@
+defaults:
+  - h36m/s9p.yaml@_global_
+  - _self_
+
+exp_name: demo-efficiency-h36m
+out_dir: "outputs/${exp_name}/${subject_id}/${now:%y%m%d_%H%M%S}"
+validate_interval: 10000000
+log_interval: 10
+save_interval: 1
+# display: [{"bsdf": "kd"}, {"bsdf": "ks"}, {"bsdf": "normal"}, {"latlong": true}]
+display: []
+batch: 4
+no_mesh_export: true
+
+validate_views: [3]  # 313 & 315 only have 21 views, instead of 23 view
+validate_begin_frame_id_novel_view: 0
+validate_num_frame_novel_view: 1000  # ceil(60 / 30) = 2
+
+mask_dir_name: mask_cihp # mask-schp, mask_cihp
+frame_interval: 1
+
+aist_pose_pkl_path: data/aist/gBR_sBM_cAll_d04_mBR0_ch06.pkl
+
+train_dataset:
+  _target_: dataset.zju_mocap.DatasetZJUMoCap
+  root_dir: ${base_root_dir}/S${subject_id}/Posing
+  split: train
+  mask_dir_name: ${mask_dir_name}
+  tfs_type: ${tfs_type}
+
+  views: ${train_views}
+  begin_frame_id: ${train_begin_frame_id}
+  num_frames: ${train_num_frame}
+  frame_interval: ${frame_interval}
+
+  dilate_erode_mask: False
+  order_camera_first: True
+  resize_factor: 1.0
+  opencv_camera: True
+  pre_load: ${pre_load}
+  force_reload: ${force_reload}
+  no_image_inputs: False
+  cam_near_far: [0.1, 1000.0]
+  width: 1000
+  height: 1000
+  use_vitruvian_pose: ${use_vitruvian_pose}
+  mask_at_box_bound_pad: ${mask_at_box_bound_pad}
+
+validate_dataset:
+  - _target_: dataset.zju_mocap_aist.DatasetZJUMoCapAIST
+    aist_pose_pkl_path: ${aist_pose_pkl_path}
+    root_dir: ${train_dataset.root_dir}
+    split: novel_view
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: ${validate_views}
+    begin_frame_id: ${validate_begin_frame_id_novel_view}
+    num_frames: ${validate_num_frame_novel_view}
+    frame_interval: ${frame_interval}
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}
+    mask_at_box_bound_pad: ${mask_at_box_bound_pad}

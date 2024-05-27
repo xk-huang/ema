@@ -1,0 +1,17 @@
+defaults:
+  - h36m/s9p.yaml@_here_
+  - _self_
+
+
+subject_id: 7
+
+train_begin_frame_id: 0
+train_num_frame: 300
+
+# validate_begin_frame_id: 1500  # 300 * 5
+# validate_num_frame: 33  # 200 / 6
+
+validate_begin_frame_id_novel_view: 0
+validate_num_frame_novel_view: 50  # ceil(300 / 6) = 50
+validate_begin_frame_id_novel_pose: 1500  # 300 * 5
+validate_num_frame_novel_pose: 34  # ceil(200 / 6) = 33

@@ -1,0 +1,30 @@
+fast_dev_run-1:
+  exp_name: fast_dev_run
+  use_mesh: true
+  albedo_regularizer: [0.0, 0.03]
+  iter: 50
+  num_val: 10
+
+fast_dev_run-2:
+  exp_name: fast_dev_run
+  use_mesh: true
+  learn_mesh_skinning: [true, false]
+  albedo_regularizer: [0.0, 0.03]
+  skin_net_encoding_type: [hash_grid, frequency]
+  iter: 50
+  num_val: 10
+
+fast_dev_run-3:
+  exp_name: fast_dev_run
+  learn_mesh_material_with_mlp: [true, false]
+  albedo_regularizer: [0.0, 0.03]
+  iter: 50
+  num_val: 10
+
+fast_dev_run-4:
+  exp_name: fast_dev_run
+  albedo_regularizer: [0.0, 0.03]
+  skin_net_encoding_type: [hash_grid, frequency]
+  dmtet_grid: [32, 64, 128]
+  iter: 50
+  num_val: 10

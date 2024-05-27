@@ -1,0 +1,101 @@
+monitor_metric_name: "metrics_otf/psnr/validate_${validate_dataset.0.split}"
+monitor_metric_threshold: 1.0
+monitor_metric_type: "max"
+
+compute_val_metrics_with_mask: true
+
+subject_id: 9
+base_root_dir: data/h36m
+
+train_views: [0, 1, 2]
+train_begin_frame_id: 0
+train_num_frame: 260
+
+validate_views: [3]  # H36M have 4 views
+validate_begin_frame_id_novel_view: 0  # train_begin_frame_id = 0
+validate_num_frame_novel_view: 44  # ceil(train_num_frame / 6) = ceil(260 / 6) = 44
+validate_begin_frame_id_novel_pose: 1300  # train_num_frame * 5 = 260 * 5
+validate_num_frame_novel_pose: 23  # ceil(true_num_frame_novel_pose / 6) = ceil(133 / 6) = 23
+mask_at_box_bound_pad: 0.05
+
+pre_load: false
+force_reload: false
+
+use_vitruvian_pose: false
+
+train_dataset:
+  _target_: dataset.zju_mocap.DatasetZJUMoCap
+  root_dir: ${base_root_dir}/S${subject_id}/Posing
+  split: train
+  mask_dir_name: mask_cihp
+  tfs_type: ${tfs_type}
+
+  views: ${train_views}
+  begin_frame_id: ${train_begin_frame_id}
+  num_frames: ${train_num_frame}
+  frame_interval: 5
+
+  dilate_erode_mask: False
+  order_camera_first: True
+  resize_factor: 1.0
+  opencv_camera: True
+  pre_load: ${pre_load}
+  force_reload: ${force_reload}
+  no_image_inputs: False
+  cam_near_far: [0.1, 1000.0]
+  width: 1000
+  height: 1000
+  use_vitruvian_pose: ${use_vitruvian_pose}
+  mask_at_box_bound_pad: ${mask_at_box_bound_pad}
+
+validate_dataset:
+  - _target_: dataset.zju_mocap.DatasetZJUMoCap
+    root_dir: ${train_dataset.root_dir}
+    split: novel_view
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: ${validate_views}
+    begin_frame_id: ${validate_begin_frame_id_novel_view}
+    num_frames: ${validate_num_frame_novel_view}
+    frame_interval: 30
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}
+
+    mask_at_box_bound_pad: ${mask_at_box_bound_pad}
+
+  - _target_: dataset.zju_mocap.DatasetZJUMoCap
+    root_dir: ${train_dataset.root_dir}
+    split: novel_pose
+    mask_dir_name: mask_cihp
+    tfs_type: ${tfs_type}
+
+    views: ${validate_views}
+    begin_frame_id: ${validate_begin_frame_id_novel_pose}
+    num_frames: ${validate_num_frame_novel_pose}
+    frame_interval: 30
+
+    dilate_erode_mask: False
+    order_camera_first: ${train_dataset.order_camera_first}
+    resize_factor: ${train_dataset.resize_factor}
+    opencv_camera: ${train_dataset.opencv_camera}
+    pre_load: ${pre_load}
+    force_reload: ${force_reload}
+    no_image_inputs: False
+    cam_near_far: ${train_dataset.cam_near_far}
+    width: ${train_dataset.width}
+    height: ${train_dataset.height}
+    use_vitruvian_pose: ${use_vitruvian_pose}
+
+    mask_at_box_bound_pad: ${mask_at_box_bound_pad}
+
